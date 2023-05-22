@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% include "header.html" %}
+    <head>
+        <link rel="apple-touch-icon" sizes="60x60" href="/static/images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+        <link rel="manifest" href="/static/images/site.webmanifest">
+        <link rel="mask-icon" href="/static/images/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <style>
+          #k_proizv  {    background-color: #BAE4AE;  }
+            #podg  {    background-color: #F3F59D;  }
+            #priost  {    background-color: #EE7B60;  }
+
+        table, th, td {
+          border: 1px solid black;
+            overflow:hidden;
+          padding: 1px;
+          padding-left: 2px;
+        }
+
+th:nth-of-type(1) {
+	width:150px;
+}
+th:nth-of-type(2) {
+	width:100px;
+}
+th:nth-of-type(3) {
+	width:110px;
+}
+th:nth-of-type(6) {
+	width:450px;
+}
+        </style>
+    </head>
+    <body>
+        {% include "menu.html" %}
+        <div class="main element">
+            {% include "navbar.html" %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="headings">
+                            <h1>Перечень проектов на {{date_now}}</h1>
+                              <p>
+                            </p>
+                              <p>
+                            </p>
+                            <h4>График загрузки сборочного цеха</h4>
+                             {% include graf_pad_mosh %}
+                                                        <p>
+                            </p>
+                            <h3>КТ</h3>
+                            <table class="kt_projects">
+                                <tr>
+                                     {% for m in kt_projects[0] %}
+                                    <th>{{ m }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for m in kt_projects[1:] %}
+                                    <tr>{% for n in m %}
+                                        {% if "к производству" in n %}
+                                            <td id="k_proizv">{{ n }}</td>
+                                        {% elif "подготовка" in n %}
+                                            <td id="podg">{{ n }}</td>
+                                        {% elif "приостановлен" in n %}
+                                            <td id="priost">{{ n }}</td>
+                                        {% else %}
+                                            <td>{{ n }}</td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                            </table>
+                            <p>
+                            </p>
+                            <h3>КЛ</h3>
+                            <table class="kl_projects">
+                                <tr>
+                                     {% for m in kl_projects[0] %}
+                                    <th>{{ m }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for m in kl_projects[1:] %}
+                                    <tr>{% for n in m %}
+                                        {% if "к производству" in n %}
+                                            <td id="k_proizv">{{ n }}</td>
+                                        {% elif "подготовка" in n %}
+                                            <td id="podg">{{ n }}</td>
+                                        {% elif "приостановлен" in n %}
+                                            <td id="priost">{{ n }}</td>
+                                        {% else %}
+                                            <td>{{ n }}</td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                            </table>
+                             <p>
+                            </p>
+
+                            <h3>ШГ</h3>
+                            <table class="shg_projects">
+                                <tr>
+                                     {% for m in shg_projects[0] %}
+                                    <th>{{ m }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for m in shg_projects[1:] %}
+                                    <tr>{% for n in m %}
+                                        {% if "к производству" in n %}
+                                            <td id="k_proizv">{{ n }}</td>
+                                        {% elif "подготовка" in n %}
+                                            <td id="podg">{{ n }}</td>
+                                        {% elif "приостановлен" in n %}
+                                            <td id="priost">{{ n }}</td>
+                                        {% else %}
+                                            <td>{{ n }}</td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                            </table>
+                                                        <p>
+                            </p>
+                            <h3>ПР</h3>
+                            <table class="pr_projects">
+                                <tr>
+                                     {% for m in pr_projects[0] %}
+                                    <th>{{ m }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for m in pr_projects[1:] %}
+                                    <tr>{% for n in m %}
+                                            {% if "к производству" in n %}
+                                            <td id="k_proizv">{{ n }}</td>
+                                        {% elif "подготовка" in n %}
+                                            <td id="podg">{{ n }}</td>
+                                        {% elif "приостановлен" in n %}
+                                            <td id="priost">{{ n }}</td>
+                                        {% else %}
+                                            <td>{{ n }}</td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                            </table>
+                                                        <p>
+                            </p>
+                            <!--<h3>Заголовок 3 с параметрами</h3>
+                            <p>
+                                Содержимое
+                            </p>-->
+                        </div>
+                        <div class="blockquote mt80">
+                            <h3>Изменения</h3>
+                            <table class="changes">
+                                <tr>
+                                     {% for m in changes[0] %}
+                                    <th>{{ m }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for m in changes[1:] %}
+                                    <tr>{% for n in m %}
+                                            <td>
+                                                       {{ n }}
+                                           </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                            </table>
+                            <p>
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {% include 'footer.html' %}
+        </div>
+        {% include 'scripts.html' %}
+    </body>
+</html>
