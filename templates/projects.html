@@ -9,10 +9,13 @@
         <link rel="mask-icon" href="/static/images/safari-pinned-tab.svg" color="#5bbad5">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
+
         <style>
           #k_proizv  {    background-color: #BAE4AE;  }
             #podg  {    background-color: #F3F59D;  }
             #priost  {    background-color: #EE7B60;  }
+            #prosrochka  {    background-color: #F75B57;  }
+            #early_date_change  {    background-color: #BAE4AE;  }
 
         table, th, td {
           border: 1px solid black;
@@ -21,17 +24,24 @@
           padding-left: 2px;
         }
 
-th:nth-of-type(1) {
+#id_projects th:nth-of-type(1) {
 	width:150px;
 }
-th:nth-of-type(2) {
+#id_projects th:nth-of-type(2) {
 	width:100px;
 }
-th:nth-of-type(3) {
+#id_projects th:nth-of-type(3) {
 	width:110px;
 }
-th:nth-of-type(6) {
-	width:450px;
+#id_projects th:nth-of-type(6) {
+	width:350px;
+}
+
+#id_changes th:nth-of-type(1) {
+	width:150px;
+}
+#id_changes th:nth-of-type(3) {
+	width:150px;
 }
         </style>
     </head>
@@ -53,7 +63,7 @@ th:nth-of-type(6) {
                                                         <p>
                             </p>
                             <h3>КТ</h3>
-                            <table class="kt_projects">
+                            <table class="kt_projects" id="id_projects">
                                 <tr>
                                      {% for m in kt_projects[0] %}
                                     <th>{{ m }}</th>
@@ -67,6 +77,10 @@ th:nth-of-type(6) {
                                             <td id="podg">{{ n }}</td>
                                         {% elif "приостановлен" in n %}
                                             <td id="priost">{{ n }}</td>
+                                        {% elif "приостановлен" in n %}
+                                            <td id="priost">{{ n }}</td>
+                                        {% elif "*" in n %}
+                                            <td id="prosrochka">{{ n }}</td>
                                         {% else %}
                                             <td>{{ n }}</td>
                                         {% endif %}
@@ -78,7 +92,7 @@ th:nth-of-type(6) {
                             <p>
                             </p>
                             <h3>КЛ</h3>
-                            <table class="kl_projects">
+                            <table class="kl_projects" id="id_projects">
                                 <tr>
                                      {% for m in kl_projects[0] %}
                                     <th>{{ m }}</th>
@@ -92,6 +106,8 @@ th:nth-of-type(6) {
                                             <td id="podg">{{ n }}</td>
                                         {% elif "приостановлен" in n %}
                                             <td id="priost">{{ n }}</td>
+                                        {% elif "*" in n %}
+                                            <td id="prosrochka">{{ n }}</td>
                                         {% else %}
                                             <td>{{ n }}</td>
                                         {% endif %}
@@ -104,7 +120,7 @@ th:nth-of-type(6) {
                             </p>
 
                             <h3>ШГ</h3>
-                            <table class="shg_projects">
+                            <table class="shg_projects" id="id_projects">
                                 <tr>
                                      {% for m in shg_projects[0] %}
                                     <th>{{ m }}</th>
@@ -118,6 +134,8 @@ th:nth-of-type(6) {
                                             <td id="podg">{{ n }}</td>
                                         {% elif "приостановлен" in n %}
                                             <td id="priost">{{ n }}</td>
+                                        {% elif "*" in n %}
+                                            <td id="prosrochka">{{ n }}</td>
                                         {% else %}
                                             <td>{{ n }}</td>
                                         {% endif %}
@@ -129,7 +147,7 @@ th:nth-of-type(6) {
                                                         <p>
                             </p>
                             <h3>ПР</h3>
-                            <table class="pr_projects">
+                            <table class="pr_projects" id="id_projects">
                                 <tr>
                                      {% for m in pr_projects[0] %}
                                     <th>{{ m }}</th>
@@ -143,6 +161,8 @@ th:nth-of-type(6) {
                                             <td id="podg">{{ n }}</td>
                                         {% elif "приостановлен" in n %}
                                             <td id="priost">{{ n }}</td>
+                                        {% elif "*" in n %}
+                                            <td id="prosrochka">{{ n }}</td>
                                         {% else %}
                                             <td>{{ n }}</td>
                                         {% endif %}
@@ -159,8 +179,8 @@ th:nth-of-type(6) {
                             </p>-->
                         </div>
                         <div class="blockquote mt80">
-                            <h3>Изменения</h3>
-                            <table class="changes">
+                            <h3>Изменения дат завершения этапа сборки</h3>
+                            <table class="changes" id="id_changes">
                                 <tr>
                                      {% for m in changes[0] %}
                                     <th>{{ m }}</th>
@@ -168,9 +188,15 @@ th:nth-of-type(6) {
                                 </tr>
                                 {% for m in changes[1:] %}
                                     <tr>{% for n in m %}
-                                            <td>
-                                                       {{ n }}
-                                           </td>
+                                            {% if n is number %}
+                                                {% if n<0 %}
+                                                    <td id="early_date_change">{{ n }}</td>
+                                                {% else %}
+                                                    <td>  {{ n }}   </td>
+                                                {% endif %}
+                                            {% else %}
+                                                    <td>  {{ n }}   </td>
+                                            {% endif %}
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}

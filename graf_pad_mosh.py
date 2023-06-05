@@ -11,7 +11,6 @@ def graf_html():
     #list_kl[2] = [F.valm(_)*204 for _ in list_kl[2]]
     summ_mosh = F.valm(list_kl[2][0]) + F.valm(list_kt[2][0]) + F.valm(list_sg[2][0]) + F.valm(list_pr[2][0])
 
-
     color = [[f'КЛ ','#8974AC',f'КЛ Макс. мощность {round(F.valm(list_kl[2][0])/summ_mosh*100)}%'],
              [f'КТ ','#E1AFAD',f'КТ Макс. мощность {round(F.valm(list_kt[2][0])/summ_mosh*100)}%'],
              [f'ШГ','#F9B883',f'ШГ Макс. мощность {round(F.valm(list_sg[2][0])/summ_mosh*100)}%'],

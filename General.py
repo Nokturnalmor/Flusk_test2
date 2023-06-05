@@ -106,7 +106,13 @@ def clear_py(py):
 
 def load_projects():
     dict_mk = CSQ.zapros('C:/DB_srv/Naryad.db',f"""SELECT Пномер, Номенклатура, Номер_заказа || "$" || Номер_проекта FROM mk""",rez_dict=True)
-
+    def check_late_dates(tbl):
+        nk_end = F.nom_kol_po_im_v_shap(tbl,'Упаковка План_заверш')
+        for i in range(len(tbl)):
+            if F.is_date(tbl[i][nk_end],"%d.%m.%Y"):
+                if F.strtodate(tbl[i][nk_end],"%d.%m.%Y") < F.now(""):
+                    tbl[i][nk_end] = tbl[i][nk_end] + "*"
+        return tbl
 
     def add_line(tbl,row):
         py = clear_py(row['Номер заявки'])
@@ -142,6 +148,10 @@ def load_projects():
     tbl_kl = F.sort_po_kol(tbl_kl, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
     tbl_shg = F.sort_po_kol(tbl_shg, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
     tbl_pr = F.sort_po_kol(tbl_pr, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
+    tbl_kl = check_late_dates(tbl_kl)
+    tbl_kt = check_late_dates(tbl_kt)
+    tbl_shg = check_late_dates(tbl_shg)
+    tbl_pr = check_late_dates(tbl_pr)
 
     return [tbl_kt,
             tbl_kl,
@@ -152,13 +162,17 @@ def load_change_projects():
     list_table_etap = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
     list_table_smena = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Изменение сроков сб.txt', False, "|")
     rez = [["Дата записи","Номер проекта","Номер заявки","Было","Стало","Разница,дней","Примечание"]]
-    for item in list_table_smena[1:]:
+    for i in range(len(list_table_smena)-1,0,-1):
+        item = list_table_smena[i]
         np = item[1]
         py = item[2]
         for etap_row in list_table_etap:
             if etap_row[0] == np and etap_row[1] == py:
-                if item[5] != '-':
+                if item[5] != '-'and item[5] != 'новый':
                     item[2] = clear_py(item[2])
+                    d1 = F.strtodate(item[3],"%d.%m.%Y")
+                    d2 = F.strtodate(item[4], "%d.%m.%Y")
+                    item[5] = (d2-d1).days
                     rez.append(item)
                 break
     return rez
@@ -216,5 +230,6 @@ def info(way,proj):
 
 
 if __name__ == "__main__":
-    #app.run(debug=True, host='192.168.50.230', port=20001)
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    #app.run(debug=False, host='192.168.50.230', port=20001)
     app.run(debug=False,host='192.168.50.230',port=20000)
