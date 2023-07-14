@@ -1,6 +1,7 @@
 import project_cust_38.Cust_Functions as F
 from flask import Flask, render_template, url_for, request
 import project_cust_38.Cust_SQLite as CSQ
+import project_cust_38.Cust_b24 as CB24
 import graf_pad_mosh as GRAF
 from jinja2 import Environment, BaseLoader
 
@@ -159,6 +160,34 @@ def load_projects():
             tbl_pr]
 
 def load_change_projects():
+    def send_to_chat(filtr_date):
+        conn = CB24.B24('chat46579')
+        for item in filtr_date:
+            if item['Примечание'] != '':
+                msg = f"Проект:{item['Номер проекта']} {item['Номер заявки']}\nБыло{item['Было']}\nСтало{item['Стало']}\nПричина{item['Примечание']}".replace(';-)',')')
+                conn.msg(msg)
+    def b24_chat(list_of_rows):
+        def check_rows(list_od_dicts):
+            path_file = r'O:\Журналы и графики\Ведомости для передачи\filtr_change_date_for_b24.pickle'
+            if not F.nalich_file(path_file):
+                F.save_file_pickle(path_file,dict())
+            filtr = F.load_file_pickle(path_file)
+            filtr_date = []
+            str_today = F.now('%Y-%m')
+            for item in list_od_dicts:
+                if F.datetostr(F.strtodate(item['Дата записи'],"%d.%m.%Y %H:%M:%S"),'%Y-%m') == str_today:
+                    if str_today not in filtr:
+                        filtr[str_today] = set()
+                    if item['Дата записи'] + "$" + item['Номер заявки'] not in filtr[str_today]:
+                        filtr_date.append(item)
+                        filtr[str_today].add(item['Дата записи'] + "$" + item['Номер заявки'])
+            F.save_file_pickle(path_file,filtr)
+            return filtr_date
+        dicts = F.list_of_lists_to_list_of_dicts(list_of_rows)
+        filtr_date  = check_rows(dicts)
+        send_to_chat(filtr_date)
+
+
     list_table_etap = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
     list_table_smena = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Изменение сроков сб.txt', False, "|")
     rez = [["Дата записи","Номер проекта","Номер заявки","Было","Стало","Разница,дней","Примечание"]]
@@ -175,6 +204,8 @@ def load_change_projects():
                     item[5] = (d2-d1).days
                     rez.append(item)
                 break
+
+    b24_chat(rez)
     return rez
 
 
@@ -231,5 +262,5 @@ def info(way,proj):
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    #app.run(debug=False, host='192.168.50.230', port=20001)
-    app.run(debug=False,host='192.168.50.230',port=20000)
+    app.run(debug=False, host='192.168.50.230', port=20001)
+    #app.run(debug=False,host='192.168.50.230',port=20000)
