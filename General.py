@@ -1,10 +1,11 @@
-import project_cust_38.Cust_Functions as F
+import pprint
+
 from flask import Flask, render_template, url_for, request
 import project_cust_38.Cust_SQLite as CSQ
 import project_cust_38.Cust_b24 as CB24
 import graf_pad_mosh as GRAF
 from jinja2 import Environment, BaseLoader
-
+import project_cust_38.Cust_Functions as F
 
 def generate_html(my_list):
     rtemplate = Environment(loader=BaseLoader()).from_string(my_list)
@@ -13,14 +14,14 @@ def generate_html(my_list):
 
 # https://fontawesome.ru/all-icons/
 
-if F.nalich_file('templates') is False:
-    F.sozd_dir('templates')
+if F.existence_file_c('templates') is False:
+    F.create_dir_c('templates')
 
-if F.nalich_file('static/css') is False:
-    F.sozd_dir('static/css')
+if F.existence_file_c('static/css') is False:
+    F.create_dir_c('static/css')
 
-if F.nalich_file('static/images') is False:
-    F.sozd_dir('static/images')
+if F.existence_file_c('static/images') is False:
+    F.create_dir_c('static/images')
 
 list_projects = [{"way":"КЛ","nn":'0193-21'},{"way":"КТ","nn":'0134-721'},
                  {"way":"КЛ","nn":'3193-21'},{"way":"КТ","nn":'3134-721'}]
@@ -97,7 +98,7 @@ r"""Sub ads()
 End Sub
 """
 def load_pr_proj():
-    return  F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\table_pr_proj.txt',False,"|")
+    return  F.open_file_c(r'O:\Журналы и графики\Ведомости для передачи\table_pr_proj.txt',False,"|")
 
 def clear_py(py):
     old_fr = r"Отдел технолога\В работе\Заказы для собственных нужд"
@@ -106,9 +107,9 @@ def clear_py(py):
     return  py
 
 def load_projects():
-    dict_mk = CSQ.zapros('C:/DB_srv/Naryad.db',f"""SELECT Пномер, Номенклатура, Номер_заказа || "$" || Номер_проекта FROM mk""",rez_dict=True)
+    dict_mk = CSQ.custom_request_c('C:/DB_srv/Naryad.db',f"""SELECT Пномер, Номенклатура, Номер_заказа || "$" || Номер_проекта FROM mk""",rez_dict=True)
     def check_late_dates(tbl):
-        nk_end = F.nom_kol_po_im_v_shap(tbl,'Упаковка План_заверш')
+        nk_end = F.num_col_by_name_in_hat_c(tbl,'Упаковка План_заверш')
         for i in range(len(tbl)):
             if F.is_date(tbl[i][nk_end],"%d.%m.%Y"):
                 if F.strtodate(tbl[i][nk_end],"%d.%m.%Y") < F.now(""):
@@ -127,14 +128,14 @@ def load_projects():
         tbl.append([row['Номер проекта'],py,row['Статус'],row['Кд'], row['Нормо-час сб'],'; '.join(mk_list),
               row['Резка'].split('/')[0], row['Мех_обработка'].split('/')[0],row['Сборка+сварка'].split('/')[0],
                     row['Покрытие'].split('/')[0], row['Упаковка'].split('/')[0]])
-    list_table = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
+    list_table = F.open_file_c(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
     list_table = F.list_to_dict(list_table)
-    shapka = ['Номер проекта','Номер заявки','Статус','Дата получения КД', 'Нормо-час сб', 'Тех.прораб, МК',
+    hat_c = ['Номер проекта','Номер заявки','Статус','Дата получения КД', 'Нормо-час сб', 'Тех.прораб, МК',
               'Резка План_заверш', 'Мех_обработка План_заверш','Сборка+сварка План_заверш', 'Покрытие План_заверш', 'Упаковка План_заверш']
-    tbl_kt = [shapka].copy()
-    tbl_kl = [shapka].copy()
-    tbl_shg = [shapka].copy()
-    tbl_pr = [shapka].copy()
+    tbl_kt = [hat_c].copy()
+    tbl_kl = [hat_c].copy()
+    tbl_shg = [hat_c].copy()
+    tbl_pr = [hat_c].copy()
 
     for i in range(len(list_table)):
         if list_table[i]['Направление'] == "КТ":
@@ -145,10 +146,10 @@ def load_projects():
             add_line(tbl_shg, list_table[i])
         if list_table[i]['Направление'] == "ПР":
             add_line(tbl_pr, list_table[i])
-    tbl_kt = F.sort_po_kol(tbl_kt,'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
-    tbl_kl = F.sort_po_kol(tbl_kl, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
-    tbl_shg = F.sort_po_kol(tbl_shg, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
-    tbl_pr = F.sort_po_kol(tbl_pr, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
+    tbl_kt = F.sort_by_column_c(tbl_kt,'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
+    tbl_kl = F.sort_by_column_c(tbl_kl, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
+    tbl_shg = F.sort_by_column_c(tbl_shg, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
+    tbl_pr = F.sort_by_column_c(tbl_pr, 'Сборка+сварка План_заверш', date_time=True,date_format="%d.%m.%Y")
     tbl_kl = check_late_dates(tbl_kl)
     tbl_kt = check_late_dates(tbl_kt)
     tbl_shg = check_late_dates(tbl_shg)
@@ -169,7 +170,7 @@ def load_change_projects():
     def b24_chat(list_of_rows):
         def check_rows(list_od_dicts):
             path_file = r'O:\Журналы и графики\Ведомости для передачи\filtr_change_date_for_b24.pickle'
-            if not F.nalich_file(path_file):
+            if not F.existence_file_c(path_file):
                 F.save_file_pickle(path_file,dict())
             filtr = F.load_file_pickle(path_file)
             filtr_date = []
@@ -188,8 +189,8 @@ def load_change_projects():
         send_to_chat(filtr_date)
 
 
-    list_table_etap = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
-    list_table_smena = F.otkr_f(r'O:\Журналы и графики\Ведомости для передачи\Изменение сроков сб.txt', False, "|")
+    list_table_etap = F.open_file_c(r'O:\Журналы и графики\Ведомости для передачи\Sroki_etapov.txt', False, "|")
+    list_table_smena = F.open_file_c(r'O:\Журналы и графики\Ведомости для передачи\Изменение сроков сб.txt', False, "|")
     rez = [["Дата записи","Номер проекта","Номер заявки","Было","Стало","Разница,дней","Примечание"]]
     for i in range(len(list_table_smena)-1,0,-1):
         item = list_table_smena[i]
@@ -262,5 +263,5 @@ def info(way,proj):
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(debug=False, host='192.168.50.230', port=20001)
+    app.run(debug=False, host='192.168.50.230', port=20000)
     #app.run(debug=False,host='192.168.50.230',port=20000)

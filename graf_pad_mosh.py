@@ -3,10 +3,10 @@ from plotly.subplots import make_subplots
 import project_cust_38.Cust_Functions as F
 
 def graf_html():
-    list_kl = F.otkr_f("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_kl.txt", separ="|")
-    list_kt = F.otkr_f("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_kt.txt", separ="|")
-    list_sg = F.otkr_f("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_sg.txt", separ="|")
-    list_pr = F.otkr_f("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_pr.txt", separ="|")
+    list_kl = F.open_file_c("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_kl.txt", separ="|")
+    list_kt = F.open_file_c("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_kt.txt", separ="|")
+    list_sg = F.open_file_c("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_sg.txt", separ="|")
+    list_pr = F.open_file_c("O:\Журналы и графики\Ведомости для передачи\gr_pad_mosh_pr.txt", separ="|")
     #list_kl[1] = [round(F.valm(_)*204) for _ in list_kl[1]]
     #list_kl[2] = [F.valm(_)*204 for _ in list_kl[2]]
     summ_mosh = F.valm(list_kl[2][0]) + F.valm(list_kt[2][0]) + F.valm(list_sg[2][0]) + F.valm(list_pr[2][0])
